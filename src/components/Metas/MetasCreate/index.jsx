@@ -1,6 +1,8 @@
 'use client'
 import { forwardRef, useEffect, useState } from 'react'
 import axios from 'axios'
+import { formatISO } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import * as S from './style'
 
 import Dialog from '@mui/material/Dialog';
@@ -8,6 +10,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { NumericFormat } from 'react-number-format';
+
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const NumericFormatCustom = forwardRef(function NumericFormatCustom(
   props,
@@ -38,7 +44,7 @@ const NumericFormatCustom = forwardRef(function NumericFormatCustom(
 export const MetasCreate = ({ openModal, closeModal }) => {
   const [ descricao, setDescricao ] = useState();
   const [ valor, setValor ] = useState();
-  const [ dataMeta, setDataMeta ] = useState();
+  const [ dataMeta, setDataMeta ] = useState(new Date());
 
   const [ notification, setNotification ] = useState({
     open: false,
@@ -63,14 +69,18 @@ export const MetasCreate = ({ openModal, closeModal }) => {
     const { name, value } = e.target
     if (name === 'descricao') setDescricao(value)
     if (name === 'valor') setValor(value)
-    if (name === 'dataMeta') setDataMeta(value)
+    // if (name === 'dataMeta') setDataMeta(value)
   }
 
   const onSumbmit = async (e) => {
     e.preventDefault()
     try {
       const token = localStorage.getItem('token')
-      await axios.post('http://localhost:8080/metas', { descricao, valor: valor * 100, data: dataMeta }, {
+      await axios.post('http://localhost:8080/metas', {
+        descricao,
+        valor: valor * 100,
+        data: formatISO(dataMeta, { representation: 'date', locale: ptBR })
+      }, {
         headers: {
           Authorization: `Bearer ${ token }`
         }
@@ -118,7 +128,6 @@ export const MetasCreate = ({ openModal, closeModal }) => {
         <DialogContent>
           <S.Form onSubmit={ onSumbmit }>
           <S.TextField name="descricao" onChange={ onChangeValue } label="Descrição" variant="outlined" color='primary' fullWidth />
-          <S.TextField name="valor" onChange={ onChangeValue } label="Valor" variant="outlined" color='primary' fullWidth />
           <S.TextField
             label="Valor"
             name="valor"
@@ -130,7 +139,9 @@ export const MetasCreate = ({ openModal, closeModal }) => {
             variant="outlined"
             fullWidth
           />
-          <S.TextField name="dataMeta" onChange={ onChangeValue } label="Data" variant="outlined" color='primary' fullWidth />
+          <LocalizationProvider dateAdapter={ AdapterDateFns } adapterLocale={ ptBR }>
+            <DatePicker onChange={ (newValue) => setDataMeta(newValue) } />
+          </LocalizationProvider>
           </S.Form>
         </DialogContent>
         <DialogActions style={{ display: 'flex', justifyContent: 'center' }}>
