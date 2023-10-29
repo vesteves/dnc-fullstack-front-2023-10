@@ -10,7 +10,9 @@ import MenuItemMUI from '@mui/material/MenuItem';
 
 export const Button = styled(ButtonMUI)``
 
-export const TextField = styled(TextFieldMUI)``
+export const TextField = styled(TextFieldMUI)`
+    margin-bottom: 15px;
+`
 
 export const H1 = styled.h1``
 
@@ -20,7 +22,9 @@ export const Alert = styled(AlertMUI)``
 
 export const Snackbar = styled(SnackbarMUI)``
 
-export const FormControl = styled(FormControlMUI)``
+export const FormControl = styled(FormControlMUI)`
+    margin-bottom: 15px;
+`
 
 export const InputLabel = styled(InputLabelMUI)``
 
