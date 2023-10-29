@@ -6,7 +6,9 @@ import SnackbarMUI from '@mui/material/Snackbar';
 
 export const Button = styled(ButtonMUI)``
 
-export const TextField = styled(TextFieldMUI)``
+export const TextField = styled(TextFieldMUI)`
+    margin-bottom: 15px;
+`
 
 export const H1 = styled.h1``
 

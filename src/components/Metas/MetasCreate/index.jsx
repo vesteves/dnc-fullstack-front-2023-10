@@ -1,9 +1,41 @@
 'use client'
-import { useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import axios from 'axios'
 import * as S from './style'
 
-export const MetasCreate = () => {
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { NumericFormat } from 'react-number-format';
+
+const NumericFormatCustom = forwardRef(function NumericFormatCustom(
+  props,
+  ref,
+) {
+  const { onChange, ...other } = props;
+
+  return (
+    <NumericFormat
+      {...other}
+      getInputRef={ref}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator="."
+      decimalSeparator=","
+      valueIsNumericString
+      prefix="R$ "
+    />
+  );
+});
+
+export const MetasCreate = ({ openModal, closeModal }) => {
   const [ descricao, setDescricao ] = useState();
   const [ valor, setValor ] = useState();
   const [ dataMeta, setDataMeta ] = useState();
@@ -13,6 +45,19 @@ export const MetasCreate = () => {
     message: '',
     severity: ''
   });
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if(openModal) {
+      setOpen(true);
+    }
+  }, [openModal])
+
+  const handleCloseModal = () => {
+    setOpen(false);
+    closeModal(false);
+  };
 
   const onChangeValue = (e) => {
     const { name, value } = e.target
@@ -25,7 +70,7 @@ export const MetasCreate = () => {
     e.preventDefault()
     try {
       const token = localStorage.getItem('token')
-      await axios.post('http://localhost:8080/metas', { descricao, valor, data: dataMeta }, {
+      await axios.post('http://localhost:8080/metas', { descricao, valor: valor * 100, data: dataMeta }, {
         headers: {
           Authorization: `Bearer ${ token }`
         }
@@ -34,8 +79,9 @@ export const MetasCreate = () => {
         open: true,
         message: `Meta ${ descricao } criada com sucesso!`,
         severity: 'success'
-      
       })
+
+      handleCloseModal()
     }
     catch (error) {
       setNotification({
@@ -61,19 +107,36 @@ export const MetasCreate = () => {
 
   return (
     <>
-      <S.Form onSubmit={ onSumbmit }>
-        <S.H1>Criar Meta</S.H1>
-        <S.TextField name="descricao" onChange={ onChangeValue } label="Descrição" variant="outlined" color='primary' fullWidth />
-        <S.TextField name="valor" onChange={ onChangeValue } label="Valor" variant="outlined" color='primary' fullWidth />
-        <S.TextField name="dataMeta" onChange={ onChangeValue } label="Data" variant="outlined" color='primary' fullWidth />
-        <S.Button variant="contained" color="success" type="submit">Enviar</S.Button>
-      </S.Form>
-
       <S.Snackbar open={ notification.open } autoHideDuration={ 3000 } onClose={ handleClose }>
         <S.Alert onClose={ handleClose } severity={ notification.severity } variant="filled" sx={{ width: '100%' }}>
           { notification.message }
         </S.Alert>
       </S.Snackbar>
+
+      <Dialog open={open} onClose={handleCloseModal}>
+        <DialogTitle>Nova Meta</DialogTitle>
+        <DialogContent>
+          <S.Form onSubmit={ onSumbmit }>
+          <S.TextField name="descricao" onChange={ onChangeValue } label="Descrição" variant="outlined" color='primary' fullWidth />
+          <S.TextField name="valor" onChange={ onChangeValue } label="Valor" variant="outlined" color='primary' fullWidth />
+          <S.TextField
+            label="Valor"
+            name="valor"
+            onChange={ onChangeValue }
+            id="formatted-numberformat-input"
+            InputProps={{
+              inputComponent: NumericFormatCustom,
+            }}
+            variant="outlined"
+            fullWidth
+          />
+          <S.TextField name="dataMeta" onChange={ onChangeValue } label="Data" variant="outlined" color='primary' fullWidth />
+          </S.Form>
+        </DialogContent>
+        <DialogActions style={{ display: 'flex', justifyContent: 'center' }}>
+          <S.Button variant="contained" color="success" type="submit" onClick={onSumbmit}>Salvar</S.Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }
