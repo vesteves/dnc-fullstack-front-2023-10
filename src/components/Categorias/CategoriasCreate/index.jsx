@@ -3,7 +3,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import * as S from './style'
 
-export const CategoriasCreate = ({ userId }) => {
+export const CategoriasCreate = () => {
   const [ nome, setNome ] = useState();
 
   const [ notification, setNotification ] = useState({
@@ -20,14 +20,12 @@ export const CategoriasCreate = ({ userId }) => {
   const onSumbmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post('http://localhost:8080/categorias',
-        { nome, user_id: userId },
-        {
-          headers: {
-            Authorization: `Bearer ${ localStorage.getItem('token') }`
-          }
+      const token = localStorage.getItem('token')
+      await axios.post('http://localhost:8080/categorias', { nome }, {
+        headers: {
+          Authorization: `Bearer ${ token }`
         }
-      )
+      })
       setNotification({
         open: true,
         message: `Categoria ${ nome } criada com sucesso!`,
@@ -36,6 +34,7 @@ export const CategoriasCreate = ({ userId }) => {
       })
     }
     catch (error) {
+      console.log('error', error)
       setNotification({
         open: true,
         message: error.response.data.error,

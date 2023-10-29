@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import * as S from './style'
 
-export const CategoriasUpdate = ({ userId, categoriaId }) => {
+export const CategoriasUpdate = ({ categoriaId }) => {
   const [ nome, setNome ] = useState();
+  const [ userId, setUserId ] = useState();
 
   const [ notification, setNotification ] = useState({
     open: false,
@@ -20,31 +21,36 @@ export const CategoriasUpdate = ({ userId, categoriaId }) => {
   useEffect(() => {
     const getCategoria = async () => {
       try {
+        const token = localStorage.getItem('token')
         const response = await axios.get(`http://localhost:8080/categorias/${ categoriaId }`, {
           headers: {
-            Authorization: `Bearer ${ localStorage.getItem('token') }`
+            Authorization: `Bearer ${ token }`
           }
         })
         setNome(response.data.data.nome)
+        setUserId(response.data.data.user_id)
       }
       catch (error) {
-        
+        setNotification({
+          open: true,
+          message: error.response.data.message,
+          severity: 'error'
+        })
       }
     }
+
     getCategoria()
   }, [ categoriaId ])
 
   const onSumbmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.put(`http://localhost:8080/categorias/${ categoriaId }`,
-        { nome, user_id: userId },
-        {
-          headers: {
-            Authorization: `Bearer ${ localStorage.getItem('token') }`
-          }
+      const token = localStorage.getItem('token')
+      await axios.put(`http://localhost:8080/categorias/${ categoriaId }`, { nome, user_id: userId }, {
+        headers: {
+          Authorization: `Bearer ${ token }`
         }
-      )
+      })
       setNotification({
         open: true,
         message: `Categoria ${ nome } atualizada com sucesso!`,
@@ -57,7 +63,6 @@ export const CategoriasUpdate = ({ userId, categoriaId }) => {
         open: true,
         message: error.response.data.error,
         severity: 'error'
-      
       })
     }
   }
@@ -78,7 +83,7 @@ export const CategoriasUpdate = ({ userId, categoriaId }) => {
     <>
       <S.Form onSubmit={ onSumbmit }>
         <S.H1>Atualizar Categoria</S.H1>
-        <S.TextField name="nome" onChange={ onChangeValue } label="Nome" variant="outlined" color='primary' value={ nome } fullWidth />
+        <S.TextField name="nome" onChange={ onChangeValue } label="Nome" variant="outlined" value={ nome } color='primary' fullWidth />
         <S.Button variant="contained" color="success" type="submit">Enviar</S.Button>
       </S.Form>
 

@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import * as S from './style'
 
-export const TransacoesCreate = ({ userId }) => {
+export const TransacoesCreate = () => {
   const [ descricao, setDescricao ] = useState();
   const [ valor, setValor ] = useState();
-  const [ tipo, setTipo ] = useState();
-  const [ data, setData ] = useState();
-  const [ categoria, setCategoria ] = useState({});
+  const [ dataTransacao, setDataTransacao ] = useState();
+  const [ tipo, setTipo ] = useState('Receita');
+  const [ categoria, setCategoria ] = useState('');
   const [ categorias, setCategorias ] = useState([]);
 
   const [ notification, setNotification ] = useState({
@@ -17,40 +17,47 @@ export const TransacoesCreate = ({ userId }) => {
     severity: ''
   });
 
-  const onChangeValue = (e) => {
-    const { name, value } = e.target
-    if (name === 'descricao') setDescricao(value)
-    if (name === 'valor') setValor(value)
-    if (name === 'tipo') setTipo(value)
-    if (name === 'data') setData(value)
-    if (name === 'categoria') setCategoria(value)
-  }
-
   useEffect(() => {
     const getCategorias = async () => {
-      const response = await axios.get('http://localhost:8080/categorias', {
-        headers: {
-          Authorization: `Bearer ${ localStorage.getItem('token') }`
-        }
-      })
-      setCategorias(response.data.data)
-      console.log(response.data.data)
+      try {
+        const token = localStorage.getItem('token')
+        const response = await axios.get('http://localhost:8080/categorias', {
+          headers: {
+            Authorization: `Bearer ${ token }`
+          }
+        })
+        setCategorias(response.data.data)
+      }
+      catch (error) {
+        setNotification({
+          open: true,
+          message: error.response.data.message,
+          severity: 'error'
+        })
+      }
     }
 
     getCategorias()
   }, [])
 
+  const onChangeValue = (e) => {
+    const { name, value } = e.target
+    if (name === 'descricao') setDescricao(value)
+    if (name === 'valor') setValor(value)
+    if (name === 'dataTransacao') setDataTransacao(value)
+    if (name === 'tipo') setTipo(value)
+    if (name === 'categoria') setCategoria(value)
+  }
+
   const onSumbmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await axios.post('http://localhost:8080/transacoes',
-        { descricao, valor, tipo, data, categoria_id: categoria, user_id: userId },
-        {
-          headers: {
-            Authorization: `Bearer ${ localStorage.getItem('token') }`
-          }
+      const token = localStorage.getItem('token')
+      await axios.post('http://localhost:8080/transacoes', { descricao, valor, data: dataTransacao, tipo, categoria_id: categoria }, {
+        headers: {
+          Authorization: `Bearer ${ token }`
         }
-      )
+      })
       setNotification({
         open: true,
         message: `Transação ${ descricao } criada com sucesso!`,
@@ -86,23 +93,36 @@ export const TransacoesCreate = ({ userId }) => {
         <S.H1>Criar Transação</S.H1>
         <S.TextField name="descricao" onChange={ onChangeValue } label="Descrição" variant="outlined" color='primary' fullWidth />
         <S.TextField name="valor" onChange={ onChangeValue } label="Valor" variant="outlined" color='primary' fullWidth />
-        <S.TextField name="tipo" onChange={ onChangeValue } label="Tipo" variant="outlined" color='primary' fullWidth />
-        <S.TextField name="data" onChange={ onChangeValue } label="Data" variant="outlined" color='primary' fullWidth />
-        { categorias.length && <S.FormControl sx={{ m: 1, minWidth: 120 }}>
-          <S.InputLabel id="demo-simple-select-helper-label">Categoria</S.InputLabel>
+        <S.TextField name="dataTransacao" onChange={ onChangeValue } label="Data" variant="outlined" color='primary' fullWidth />
+        <S.FormControl fullWidth>
+          <S.InputLabel id="tipo">Tipo</S.InputLabel>
           <S.Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
+            labelId="tipo"
+            id="tipo_select"
+            name="tipo"
+            value={ tipo }
+            label="Tipo"
+            onChange={ onChangeValue }
+          >
+            <S.MenuItem value="Despesa">Despesa</S.MenuItem>
+            <S.MenuItem value="Receita">Receita</S.MenuItem>
+          </S.Select>
+        </S.FormControl>
+        <S.FormControl fullWidth>
+          <S.InputLabel id="categoria">Categoria</S.InputLabel>
+          <S.Select
+            labelId="categoria"
+            id="categoria_select"
             name="categoria"
             value={ categoria }
             label="Categoria"
             onChange={ onChangeValue }
           >
-            { categorias.map((categoria) => (
+            { categorias.map(categoria => 
               <S.MenuItem key={ categoria.id } value={ categoria.id }>{ categoria.nome }</S.MenuItem>
-            )) }
+            ) }
           </S.Select>
-        </S.FormControl> }
+        </S.FormControl>
         <S.Button variant="contained" color="success" type="submit">Enviar</S.Button>
       </S.Form>
 

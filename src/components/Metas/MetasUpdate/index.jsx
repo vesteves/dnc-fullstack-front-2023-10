@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import * as S from './style'
 
-export const MetasUpdate = ({ userId, metaId }) => {
+export const MetasUpdate = ({ metaId }) => {
   const [ descricao, setDescricao ] = useState();
   const [ valor, setValor ] = useState();
+  const [ dataMeta, setDataMeta ] = useState();
+  const [ userId, setUserId ] = useState();
 
   const [ notification, setNotification ] = useState({
     open: false,
@@ -17,37 +19,44 @@ export const MetasUpdate = ({ userId, metaId }) => {
     const { name, value } = e.target
     if (name === 'descricao') setDescricao(value)
     if (name === 'valor') setValor(value)
+    if (name === 'dataMeta') setDataMeta(value)
   }
 
   useEffect(() => {
     const getMeta = async () => {
       try {
+        const token = localStorage.getItem('token')
         const response = await axios.get(`http://localhost:8080/metas/${ metaId }`, {
           headers: {
-            Authorization: `Bearer ${ localStorage.getItem('token') }`
+            Authorization: `Bearer ${ token }`
           }
         })
         setDescricao(response.data.data.descricao)
         setValor(response.data.data.valor)
+        setDataMeta(response.data.data.data)
+        setUserId(response.data.data.user_id)
       }
       catch (error) {
-        
+        setNotification({
+          open: true,
+          message: error.response.data.message,
+          severity: 'error'
+        })
       }
     }
+
     getMeta()
   }, [ metaId ])
 
   const onSumbmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.put(`http://localhost:8080/metas/${ metaId }`,
-        { descricao, valor, user_id: userId },
-        {
-          headers: {
-            Authorization: `Bearer ${ localStorage.getItem('token') }`
-          }
+      const token = localStorage.getItem('token')
+      await axios.put(`http://localhost:8080/metas/${ metaId }`, { descricao, valor, data: dataMeta, user_id: userId }, {
+        headers: {
+          Authorization: `Bearer ${ token }`
         }
-      )
+      })
       setNotification({
         open: true,
         message: `Meta ${ descricao } atualizada com sucesso!`,
@@ -60,7 +69,6 @@ export const MetasUpdate = ({ userId, metaId }) => {
         open: true,
         message: error.response.data.error,
         severity: 'error'
-      
       })
     }
   }
@@ -80,9 +88,10 @@ export const MetasUpdate = ({ userId, metaId }) => {
   return (
     <>
       <S.Form onSubmit={ onSumbmit }>
-        <S.H1>Atualizar Categoria</S.H1>
-        <S.TextField name="descricao" onChange={ onChangeValue } label="Descrição" variant="outlined" color='primary' value={ descricao } fullWidth />
-        <S.TextField name="valor" onChange={ onChangeValue } label="Valor" variant="outlined" color='primary' value={ valor } fullWidth />
+        <S.H1>Atualizar Meta</S.H1>
+        <S.TextField name="descricao" onChange={ onChangeValue } label="Descrição" variant="outlined" value={ descricao } color='primary' fullWidth />
+        <S.TextField name="valor" onChange={ onChangeValue } label="Valor" variant="outlined" value={ valor } color='primary' fullWidth />
+        <S.TextField name="dataMeta" onChange={ onChangeValue } label="Data" variant="outlined" value={ dataMeta } color='primary' fullWidth />
         <S.Button variant="contained" color="success" type="submit">Enviar</S.Button>
       </S.Form>
 
