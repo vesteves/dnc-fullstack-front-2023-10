@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { Chart } from '../../../components/Chart';
+import { Panel } from '../../../components/Panel';
 
 export const DashboardPage = () => {
   const [ user, setUser ] = useState({
@@ -27,7 +28,8 @@ export const DashboardPage = () => {
   }, [])
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>Olá, { user.name }</h1>
+      <Panel />
       <div style={{ marginLeft: '80px' }}>
         <Chart />
       </div>
