@@ -82,7 +82,14 @@ export const TransacoesUpdate = ({ transacaoId }) => {
     e.preventDefault()
     try {
       const token = localStorage.getItem('token')
-      await axios.put(`http://localhost:8080/transacoes/${ transacaoId }`, { descricao, valor, data: dataTransacao, tipo, categoria_id: categoria, user_id: userId }, {
+      await axios.put(`http://localhost:8080/transacoes/${ transacaoId }`, {
+        descricao,
+        valor,
+        data: dataTransacao,
+        tipo,
+        categoria_id: categoria,
+        user_id: userId
+      }, {
         headers: {
           Authorization: `Bearer ${ token }`
         }

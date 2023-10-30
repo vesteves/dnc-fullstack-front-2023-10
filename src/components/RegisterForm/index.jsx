@@ -82,8 +82,8 @@ export const RegisterForm = () => {
               <S.InputAdornment position="end">
                 <S.IconButton
                   aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
+                  onClick={ handleClickShowPassword }
+                  onMouseDown={ handleMouseDownPassword }
                   edge="end"
                 >
                   {showPassword ? <S.VisibilityOff /> : <S.Visibility />}

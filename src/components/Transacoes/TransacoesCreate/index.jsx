@@ -152,7 +152,7 @@ export const TransacoesCreate = ({ openModal, closeModal }) => {
         </S.Alert>
       </S.Snackbar>
 
-      <Dialog open={open} onClose={handleCloseModal}>
+      <Dialog open={ open } onClose={handleCloseModal}>
         <DialogTitle>Nova Transação</DialogTitle>
         <DialogContent>
           <S.Form onSubmit={ onSumbmit }>
@@ -203,7 +203,7 @@ export const TransacoesCreate = ({ openModal, closeModal }) => {
           </S.Form>
         </DialogContent>
         <DialogActions style={{ display: 'flex', justifyContent: 'center' }}>
-          <S.Button variant="contained" color="success" type="submit" onClick={onSumbmit}>Salvar</S.Button>
+          <S.Button variant="contained" color="success" type="submit" onClick={ onSumbmit }>Salvar</S.Button>
         </DialogActions>
       </Dialog>
     </>

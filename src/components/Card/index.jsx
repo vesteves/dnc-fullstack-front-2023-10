@@ -12,7 +12,6 @@ export const Card = ({ children, label, valor, isMeta, metas = [], saldo = 0 }) 
     const onChangeValue = (e) => {
         const { name, value } = e.target
         if (name === 'meta') setMeta(value)
-        console.log(meta)
     }
 
     return (

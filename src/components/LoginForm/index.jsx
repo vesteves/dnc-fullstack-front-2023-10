@@ -73,7 +73,7 @@ export const LoginForm = () => {
             id="outlined-adornment-password"
             name="password"
             onChange={ onChangeValue }
-            type={showPassword ? 'text' : 'password'}
+            type={ showPassword ? 'text' : 'password'}
             endAdornment={
               <S.InputAdornment position="end">
                 <S.IconButton

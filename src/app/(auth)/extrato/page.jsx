@@ -9,9 +9,6 @@ import { TransacoesCreate } from '../../../components/Transacoes/TransacoesCreat
 import { TransacoesList } from '../../../components/Transacoes/TransacoesList'
 
 export const ExtratoPage = () => {
-    const [ user, setUser ] = useState({
-        id: null
-    });
     const [ openModalCategoria, setOpenModalCategoria ] = useState(false);
     const [ openModalMeta, setOpenModalMeta ] = useState(false);
     const [ openModalTransacao, setOpenModalTransacao ] = useState(false);
@@ -25,9 +22,7 @@ export const ExtratoPage = () => {
             headers: {
                 'Authorization': `Bearer ${ token }`
             }
-        }).then(response => {
-            setUser(response.data.data);
-        }).catch(_ => {
+        }).then(_ => {}).catch(_ => {
             window.location.href = '/login';
         })
 
@@ -36,13 +31,13 @@ export const ExtratoPage = () => {
     return (
         <>
             <div style={{ display: 'flex', gap: '15px' }}>
-                <Button variant="contained" color="primary" type="submit" onClick={() => setOpenModalTransacao(true)}>Nova Transação</Button>
-                <Button variant="contained" color="primary" type="submit" onClick={() => setOpenModalCategoria(true)}>Nova Categoria</Button>
-                <Button variant="contained" color="primary" type="submit" onClick={() => setOpenModalMeta(true)}>Nova Meta</Button>
+                <Button variant="contained" color="primary" type="submit" onClick={ () => setOpenModalTransacao(true) }>Nova Transação</Button>
+                <Button variant="contained" color="primary" type="submit" onClick={ () => setOpenModalCategoria(true) }>Nova Categoria</Button>
+                <Button variant="contained" color="primary" type="submit" onClick={ () => setOpenModalMeta(true) }>Nova Meta</Button>
             </div>
-            <CategoriasCreate openModal={openModalCategoria} closeModal={setOpenModalCategoria} />
-            <MetasCreate openModal={openModalMeta} closeModal={setOpenModalMeta} />
-            <TransacoesCreate openModal={openModalTransacao} closeModal={setOpenModalTransacao} />
+            <CategoriasCreate openModal={openModalCategoria} closeModal={ setOpenModalCategoria } />
+            <MetasCreate openModal={openModalMeta} closeModal={ setOpenModalMeta } />
+            <TransacoesCreate openModal={openModalTransacao} closeModal={ setOpenModalTransacao } />
             <TransacoesList />
         </>
     )

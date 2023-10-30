@@ -29,9 +29,7 @@ export const Panel = () => {
 
                 setMetas(response.data.data)
             }
-            catch (error) {
-                console.log(error)
-            }
+            catch (_) {}
 
         }
         getMetas()
@@ -60,13 +58,10 @@ export const Panel = () => {
                 }
 
                 somatorio.saldo = somatorio.receita - somatorio.despesa
-                console.log('somatorio', somatorio)
 
                 setSomatorio(somatorio)
             }
-            catch (error) {
-                console.log(error)
-            }
+            catch (_) {}
 
         }
         getTransacoes()

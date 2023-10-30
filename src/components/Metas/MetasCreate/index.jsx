@@ -52,7 +52,7 @@ export const MetasCreate = ({ openModal, closeModal }) => {
     severity: ''
   });
 
-  const [open, setOpen] = useState(false);
+  const [ open, setOpen ] = useState(false);
 
   useEffect(() => {
     if(openModal) {
@@ -69,7 +69,6 @@ export const MetasCreate = ({ openModal, closeModal }) => {
     const { name, value } = e.target
     if (name === 'descricao') setDescricao(value)
     if (name === 'valor') setValor(value)
-    // if (name === 'dataMeta') setDataMeta(value)
   }
 
   const onSumbmit = async (e) => {

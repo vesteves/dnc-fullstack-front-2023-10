@@ -18,13 +18,13 @@ export const CategoriasCreate = ({ openModal, closeModal }) => {
     severity: ''
   });
 
-  const [open, setOpen] = useState(false);
+  const [ open, setOpen ] = useState(false);
 
   useEffect(() => {
     if(openModal) {
       setOpen(true);
     }
-  }, [openModal])
+  }, [ openModal ])
 
   const handleCloseModal = () => {
     setOpen(false);
@@ -53,7 +53,6 @@ export const CategoriasCreate = ({ openModal, closeModal }) => {
       handleCloseModal()
     }
     catch (error) {
-      console.log('error', error)
       setNotification({
         open: true,
         message: error.response.data.error,
@@ -90,7 +89,7 @@ export const CategoriasCreate = ({ openModal, closeModal }) => {
           </S.Form>
         </DialogContent>
         <DialogActions style={{ display: 'flex', justifyContent: 'center' }}>
-          <S.Button variant="contained" color="success" type="submit" onClick={onSumbmit}>Salvar</S.Button>
+          <S.Button variant="contained" color="success" type="submit" onClick={ onSumbmit }>Salvar</S.Button>
         </DialogActions>
       </Dialog>
     </>

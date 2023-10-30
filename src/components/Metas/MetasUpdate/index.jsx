@@ -52,7 +52,12 @@ export const MetasUpdate = ({ metaId }) => {
     e.preventDefault()
     try {
       const token = localStorage.getItem('token')
-      await axios.put(`http://localhost:8080/metas/${ metaId }`, { descricao, valor, data: dataMeta, user_id: userId }, {
+      await axios.put(`http://localhost:8080/metas/${ metaId }`, {
+        descricao,
+        valor,
+        data: dataMeta,
+        user_id: userId
+      }, {
         headers: {
           Authorization: `Bearer ${ token }`
         }

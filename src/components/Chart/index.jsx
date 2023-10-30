@@ -52,12 +52,9 @@ export const Chart = () => {
                         despesa: item.despesa ?? 0,
                     })
                 })
-                // console.log(dataset)
                 setDataset(dataset)
             }
-            catch (error) {
-                console.log(error)
-            }
+            catch (_) {}
 
         }
         getTransacoes()
