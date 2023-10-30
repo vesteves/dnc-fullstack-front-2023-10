@@ -78,7 +78,7 @@ export const TransacoesList = () => {
     const onChangeValue = (e) => {
         const { name, value } = e.target
         if (name === 'ano') setAno(value)
-      }
+    }
 
     return (
         <> 
